@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Sneaker List</h1>
+
+{% for sneaker in sneakers %}
+  <div class="card">
+    <div class="card-content">
+      <span class="card-title">{{ sneaker.name }}</span>
+      <p>Release Date: {{ sneaker.release }}</p>
+      <p>Description: {{ sneaker.description }}</p>
+      {% if sneaker.price > 0 %}
+        <p>Original Price: ${{ sneaker.price }}</p>
+      {% else %}
+        <p>Price: Unavailable</p>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock %}
