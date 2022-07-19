@@ -1,3 +1,4 @@
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render
 from .models import Sneaker
 
@@ -29,3 +30,15 @@ def sneakers_index(request):
 def sneakers_detail(request, sneaker_id):
     sneaker = Sneaker.objects.get(id=sneaker_id)
     return render(request, 'sneakers/detail.html', {'sneaker': sneaker})
+
+class SneakerCreate(CreateView):
+  model = Sneaker
+  fields = '__all__'
+
+class SneakerUpdate(UpdateView):
+    model = Sneaker
+    fields = ['brand', 'date', 'description', 'price']
+
+class SneakerDelete(DeleteView):
+  model = Sneaker
+  success_url = '/sneakers/'
