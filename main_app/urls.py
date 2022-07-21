@@ -17,4 +17,5 @@ urlpatterns = [
     path('protectors/create/', views.ProtectorCreate.as_view(), name='protectors_create'),
     path('protectors/<int:pk>/update/', views.ProtectorUpdate.as_view(), name='protectors_update'),
     path('protectors/<int:pk>/delete/', views.ProtectorDelete.as_view(), name='protectors_delete'),
+    path('accounts/signup/', views.signup, name='signup'),
 ]
