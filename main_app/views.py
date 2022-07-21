@@ -22,7 +22,7 @@ from .forms import WornForm
 
 class SneakerCreate(CreateView):
   model = Sneaker
-  fields = '__all__'
+  fields = ['name','brand', 'date', 'description', 'price']
 
 class SneakerUpdate(UpdateView):
     model = Sneaker
@@ -43,11 +43,13 @@ def sneakers_index(request):
   return render(request, 'sneakers/index.html', { 'sneakers': sneakers })
 
 def sneakers_detail(request, sneaker_id):
-    sneaker = Sneaker.objects.get(id=sneaker_id)
-    worn_form = WornForm()
-    return render(request, 'sneakers/detail.html', {
-      'sneaker': sneaker, 'worn_form': worn_form
-    })
+  sneaker = Sneaker.objects.get(id=sneaker_id)
+  protectors_sneaker_doesnt_have = Protector.objects.exclude(id__in = sneaker.protectors.all().values_list('id'))
+  worn_form = WornForm()
+  return render(request, 'sneakers/detail.html', {
+    'sneaker': sneaker, 'worn_form': worn_form,
+    'protectors': protectors_sneaker_doesnt_have,
+  })
 
 def add_worn(request, sneaker_id):
   form = WornForm(request.POST)
@@ -55,6 +57,10 @@ def add_worn(request, sneaker_id):
     new_worn = form.save(commit=False)
     new_worn.sneaker_id = sneaker_id
     new_worn.save()
+  return redirect('detail', sneaker_id=sneaker_id)
+
+def assoc_protector(request, sneaker_id, protector_id):
+  Sneaker.objects.get(id=sneaker_id).protectors.add(protector_id)
   return redirect('detail', sneaker_id=sneaker_id)
 
 class ProtectorList(ListView):

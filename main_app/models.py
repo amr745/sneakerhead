@@ -2,7 +2,6 @@ from django.db import models
 from django.urls import reverse
 from datetime import datetime, timedelta, date
 
-
 PLACES = (
         ('P', 'Play'),
         ('W', 'Work'),
@@ -35,12 +34,14 @@ class Sneaker(models.Model):
     def get_absolute_url(self):
         return reverse('detail', kwargs={ 'sneaker_id': self.id })
 
-    def worn_for_the_month(self):
+    def worn_today(self):
         today = datetime.now()
         one_month_ago = today - timedelta(days=31)
-        return self.worn_set.filter(date__month=date.today().month).count
-        # return self.worn_set.filter(one_month_ago)
-        # print(self.worn_set.filter(date__year=date.today().year))
+        # time_range = DateTimeRange(today(), one_month_ago)
+        return self.worn_set.filter(date=date.today())
+        # return self.worn_set.filter(date_list=today - one_month_ago)
+        # print(self.worn_set.filter(date=today - one_month_ago))
+        # print(self.worn_set.filter(date=date).count())
         
 class Worn(models.Model):
     date = models.DateField('date worn')
