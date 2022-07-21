@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Protector List</h1>
+
+{% for protector in protector_list %}
+  <a href="{% url 'protectors_detail' protector.id %}">
+    <div class="card">
+        <div class="card-content">
+            <span class="card-title">{{ protector.name }}</span>
+            <p>Color: {{ protector.color }}</p>
+        </div>
+    </div>
+  </a>
+{% endfor %}
+
+{% endblock %}

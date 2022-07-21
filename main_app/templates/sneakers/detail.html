@@ -3,7 +3,9 @@
 
 <h1>Sneaker Details</h1>
 
-  <div class="card">
+<div class="row">
+  <div class="col s6">
+    <div class="card">
       <div class="card-content">
         <span class="card-title">{{ sneaker.name }}</span>
         <p>Brand: {{ sneaker.brand }}</p>
@@ -19,6 +21,48 @@
         <a href="{% url 'sneakers_update' sneaker.id %}">Edit</a>
         <a href="{% url 'sneakers_delete' sneaker.id %}">Delete</a>
       </div>
+    </div>
   </div>
+  <div class="col s6">
 
+    <form action="{% url 'add_worn' sneaker.id %}" method="POST">
+      {% csrf_token %}
+      {{ worn_form.as_p }}
+      <input type="submit" class="btn" value="Add">
+    </form>
+    <br>
+    {% if sneaker.worn_for_the_month %}
+      <div class="card-panel teal-text center-align">You have worn your {{sneaker.name}} this month</div>
+    {% else %}
+      <div class="card-panel teal-text center-align">You haven't worn your {{sneaker.name}} in a while</div>
+    {% endif %}
+    <table class="striped">
+      <thead>
+        <tr><th>Date</th><th>Place</th></tr>
+      </thead>
+      <tbody>
+        {% for worn in sneaker.worn_set.all %}
+          <tr>
+            <td>{{worn.date}}</td>
+            <td>{{worn.get_place_display}}</td>
+          </tr>
+          {%  endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>
+  // Configure the datepicker
+  const dateEl = document.getElementById('id_date');
+  M.Datepicker.init(dateEl, {
+    format: 'yyyy-mm-dd',
+    defaultDate: new Date(),
+    setDefaultDate: true,
+    autoClose: true,
+  });
+
+  //Configure the select tag
+  const selectEl = document.getElementById('id_place');
+  M.FormSelect.init(selectEl);
+</script>
 {% endblock %}
