@@ -1,24 +1,14 @@
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView
-from .models import Sneaker, Protector
+from .models import Sneaker, Protector, Photo
 from .forms import WornForm
 
-# class Sneaker:
-#   def __init__(self, name, brand, date, description, price):
-#     self.name = name
-#     self.brand = brand
-#     self.date = date
-#     self.description = description
-#     self.price = price
+import uuid
+import boto3
 
-# sneakers = [
-#   Sneaker('Air Jordan 1 High "Bleached Coral"', 'Nike', 'July 2, 2022', 'Black/White/Amethyst Wave/Bleached Coral', 170),
-#   Sneaker('Nike Air Bo Turf "White And Solar Red"', 'Nike', 'July 6, 2022', 'White/Solar Red-Black', 140),
-#   Sneaker('Martine Rose X Nike MR4 Shox "Black"', 'Nike', 'July 7, 2022', 'BLACK/METALLIC SILVER-COMET', 180)
-# ]
-
-# Define the home view
+S3_BASE_URL='https://s3-us-west-1.amazonaws.com/'
+BUCKET='sneakerhead-ar-83'
 
 class SneakerCreate(CreateView):
   model = Sneaker
@@ -58,6 +48,20 @@ def add_worn(request, sneaker_id):
     new_worn.sneaker_id = sneaker_id
     new_worn.save()
   return redirect('detail', sneaker_id=sneaker_id)
+
+def add_photo(request, sneaker_id):
+    photo_file = request.FILES.get('photo-file', None)
+    if photo_file:
+        s3 = boto3.client('s3')
+        key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+        try:
+            s3.upload_fileobj(photo_file, BUCKET, key)
+            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            photo = Photo(url=url, sneaker_id=sneaker_id)
+            photo.save()
+        except:
+            print('An error occurred uploading file to S3')
+    return redirect('detail', sneaker_id=sneaker_id)
 
 def assoc_protector(request, sneaker_id, protector_id):
   Sneaker.objects.get(id=sneaker_id).protectors.add(protector_id)

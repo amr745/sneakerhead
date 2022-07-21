@@ -10,6 +10,7 @@ urlpatterns = [
     path('sneakers/<int:pk>/update/', views.SneakerUpdate.as_view(), name='sneakers_update'),
     path('sneakers/<int:pk>/delete/', views.SneakerDelete.as_view(), name='sneakers_delete'),
     path('sneakers/<int:sneaker_id>/add_worn/', views.add_worn, name='add_worn'),
+    path('sneakers/<int:sneaker_id>/add_photo/', views.add_photo, name='add_photo'),
     path('sneakers/<int:sneaker_id>/assoc_protector/<int:protector_id>/', views.assoc_protector, name='assoc_protector'),
     path('protectors/', views.ProtectorList.as_view(), name='protectors_index'),
     path('protectors/<int:pk>/', views.ProtectorDetail.as_view(), name='protectors_detail'),
